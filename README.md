@@ -1,297 +1,574 @@
 <div align="center">
     <br>
-    <img src="images/icon.png" alt="Fay">
-    <h1>FAY</h1>
-	<h3>数  字  人  Fay  控  制  器(这是元宇宙吗？)</h3>
-</div>
+    <img src="images/icon.png" alt="Fay" />
+    <h1>Fay开源数字人框架</h1></div>
 
 
-Fay是一个完整的开源项目，包含Fay控制器及数字人模型，可灵活组合出不同的应用场景：虚拟主播、现场推销货、商品导购、语音助理、远程语音助理、数字人互动、数字人面试官及心理测评、贾维斯、Her。开发人员可以利用该项目简单地构建各种类型的数字人或数字助理。该项目各模块之间耦合度非常低，包括声音来源、语音识别、情绪分析、NLP处理、情绪语音合成、语音输出和表情动作输出等模块。每个模块都可以轻松地更换。
 
-## **一、Fay控制器用途**
 
 
-![](images/kzq.jpg)
+如果你需要是一个线上线下的销售员，请移步[`带货完整版`](https://github.com/TheRamU/Fay/tree/fay-sales-edition)                       
 
+如果你需要的是一个人机交互的数字人助理（当然，你也可以命令它开关设备），请移步 [`助理完整版`](https://github.com/TheRamU/Fay/tree/fay-assistant-edition)
 
-### **远程语音助理**   [`PC demo`](https://github.com/TheRamU/Fay/tree/main/python_connector_demo)
+如果你需要是一个可以自主决策、主动联系主人的agent，请移步[`agent版`](https://github.com/TheRamU/Fay/tree/fay-agent-edition)
 
-### **远程语音助理**  [`android demo`](https://github.com/TheRamU/Fay/tree/main/android_connector_demo)
+框架文档：https://qqk9ntwbcit.feishu.cn/wiki/space/7321626901586411523
 
 
 
+“所有产品都值得用数字人从新做一遍”
 
-### **与数字形象通讯**（非必须,控制器需要关闭“面板播放”）
+Fay数字人2024.09.11更新：
 
-控制器与采用 WebSocket 方式与 UE 通讯
+🌟Fay-助理版:
 
-![](images/cs.png)
+1、删除多余文件：datas、ppn；
 
-下载工程: [https://pan.baidu.com/s/1RBo2Pie6A5yTrCf1cn_Tuw?pwd=ck99](https://pan.baidu.com/s/1RBo2Pie6A5yTrCf1cn_Tuw?pwd=ck99)
+2、修改readme图片路径；
 
+3、补充注释；
 
-下载windows运行包: [https://pan.baidu.com/s/1CsJ647uV5rS2NjQH3QT0Iw?pwd=s9s8](https://pan.baidu.com/s/1CsJ647uV5rS2NjQH3QT0Iw?pwd=s9s8)
+4、删除多余代码；
 
-![](images/UElucky.png)
+5、docker文件整理；
 
-**发您的Fay运行效果视频至公众号领取最新的UE5模型哦**
+6、http验证文件修改；
 
-通讯地址: [`ws://127.0.0.1:10002`](ws://127.0.0.1:10002)（已接通）
+7、优化音频处理时间。
 
-消息格式: 查看 [WebSocket.md](https://github.com/TheRamU/Fay/blob/main/WebSocket.md)
+Fay数字人2024.09.04更新：
 
+🌟Fay-助理版&带货版&agent版：
 
+1、websocket服务端连接优化； 
 
-### **与远程音频输入输出设备连接**（非必须,外网需要配置http://ngrok.cc tcp通道的clientid）
+2、接入gptsovits v3接口。）
 
-控制器与采用 socket(非websocket) 方式与 音频输出设备通讯
+🌟Fay-UE5.4：
 
-内网通讯地址: [`ws://127.0.0.1:10001`](ws://127.0.0.1:10001)
+1、解决插件AZSpeech在5.4SoundWave无法播放问题；
 
-外网通讯地址: 通过http://ngrok.cc获取（有伙伴愿意赞助服务器给社区免费使用吗？）
+2、支持连接网页端。
 
-![](images/Dingtalk_20230131122109.jpg)
-消息格式: 参考 [remote_audio.py](https://github.com/TheRamU/Fay/blob/main/python_connector_demo/remote_audio.py)
+Fay数字人2024.08.28更新：
 
+🌟Fay-助理版：
 
+1、ui上多用户对话支持（统一用户管理接口）
+2、添加http验证
 
+🌟fay-android、python-connector
 
-## **二、Fay控制器核心逻辑**
+1、统一音频格式wav
 
-![](images/luoji.png)
+🌟duix sdk
 
- **注：**
+1、增加音频播放状态检测（工程包已上传）
 
-1、去API及会话管理功能将在下一版本发布；
+🌟Fay=ue azure版
 
-2、以上每个模块可轻易替换成自家核心产品。
+1、5.3支持独立用户多终端与fay对接
+2、降级到5.3稳定版
+3、提供最新一键包
+4、支持打包后配置azure key
 
-### **目录结构**
 
-```
-.
-├── main.py					# 程序主入口
-├── fay_booter.py			# 核心启动模块
-├── config.json				# 控制器配置文件
-├── system.conf				# 系统配置文件
-├── ai_module
-│   ├── ali_nls.py			# 阿里云 实时语音
-│   ├── ms_tts_sdk.py       # 微软 文本转语音
-│   ├── xf_aiui.py          # 讯飞 人机交互-自然语言处理
-│   ├── chatgpt.py          # gpt3.5对接
-│   ├── yuan_1_0.py          # 浪潮.源大模型对接
-│   └── xf_ltp.py           # 讯飞 性感分析
-├── bin                     # 可执行文件目录
-├── core                    # 数字人核心
-│   ├── fay_core.py         # 数字人核心模块
-│   ├── recorder.py         # 录音器
-│   ├── tts_voice.py        # 语音生源枚举
-│   ├── viewer.py           # 抖音直播间接入模块
-│   └── wsa_server.py       # WebSocket 服务端
-├── gui                     # 图形界面
-│   ├── flask_server.py     # Flask 服务端
-│   ├── static
-│   ├── templates
-│   └── window.py           # 窗口模块
-├── scheduler
-│   └── thread_manager.py   # 调度管理器
-└── utils                   # 工具模块
-    ├── config_util.py      
-    ├── storer.py
-    └── util.py
-```
+Fay数字人2024.08.07更新：
 
+🌟Fay-带货版：
 
-## **三、升级日志**
+1、统一tts输出为wav格式；
+2、优化灵聚授权方式。
+3、替换默认nlp为moonshot。
 
-**2023.04：**
+🌟Fay-agent版：
 
-+ 抖音直播互动数据对接更换成系统代理抓包pd解码的方式（运行直播伴侣即可）；
-+ 修复若干逻辑及说明错误。
+1、统一tts输出为wav格式。
 
+🌟Fay-助理版：
 
-**2023.03：**
+1、统一tts输出为wav格式； 
+2、优化灵聚授权方式；
+3、类gpt接口，远程音频兼容多用户模式；
+4、替换默认nlp为moonshot。
 
-+ 增加edge-tts语音合成（免费）可替换azure-tts(支持情绪化语音)；
-+ 替换flask发行版运行方式；
-+ web socket接口增加数字人文字内容同步，以便数人字可以远程运行；
-+ 优化数字人数据web socket同步逻辑；
-+ 更改gpt 3.5对接方式。
+Fay数字人2024.07.31更新：
+agent：
+1、接入volcano_tts；
+2、类gpt接口兼容流式方式；
 
-**2023.02：**
+助理版：
+1、修复启动时配置有误问题；
+ 2、接入coze； 
+3、接入volcano tts；
+ 4、类gpt接口兼容流式方式；
+5、去除非3.12时报错问题。
 
-+ 提供chatgpt及yuan1.0作为选择。
+带货版：
+1、接入coze；
+ 2、接入volcano tts；
+ 3、加入记录生成到excel； 
+4、加入本地违禁词检查可关闭；
+5、修复gpt记录不读取问题；
+6、修复缺失包问题。
 
-**2023.01：**
+Fay数字人2024.07.24更新：
 
-+ 控制器pc内网穿透，音频输入输出设备远程直连；
-+ 提供android 音频输入输出工程示例代码；
-+ 提供python音频输入输出工程示例代码（远程PC、树莓派等可用）；
-+ 补传1.0语音指令音乐播放模块（暂不支持远程播放）；
-+ 重构及补充若干工具模块：websocket、多线程、缓冲器、音频流录制器等；
-+ 修复1.x版本的多个bug；
-+ 集成看板娘;
+🌟Fay-助理版：
 
-**2022.12：**
+1、接入SenseVoice； 
 
-+ 上传bin目录（用于直播互动）；
+2、接入private-gpt； 
 
-**2022.11：**
+3、python3.12兼容性优化。
 
-+ 更新抖音直播获取粉丝互动数据的xpath;
+Fay数字人2024.07.17更新：
 
-**2022.10.27：**
+🌟Fay-agent版：
 
-+ 更新mac上的麦克风参数；
-+ 解决mac上无法重启问题；
-+ 上传brew安装脚本。
+1、优化日程设置； 
 
-**2022.10.17：**
-+ 更新语音指令；
-+ 补充人设语法；
+2、优化日程提醒。
 
+Fay数字人2024.07.10更新：
 
+🌟Fay-助理版：
 
+1、新增接入gptsovits；
 
-## **四、安装说明**
+2、修复gpt代理配置空某些base_url出现报错问题。
 
+🌟Fay-带货版：
 
-### **环境** 
-- Python 3.8.0 +
-- Chrome 浏览器 (若不开启直播功能，可跳过)
+1、新增接入gptsovits；
 
-### **安装依赖**
+2、修复gpt代理配置空某些base_url出现报错问题； 
 
-```shell
-pip install -r requirements.txt
-```
+3、页面UI优化。
 
-### **配置应用密钥**
-+ 查看 [AI 模块](#ai-模块)
-+ 浏览链接，注册并创建应用，将应用密钥填入 `./system.conf` 中
+🌟Fay-agent版：
 
-### **启动**
-启动Fay控制器
-```shell
-python main.py
-```
+1、新增接入gptsovits； 
 
+2、修复聊天信息初始化未成功问题;
 
-### **AI 模块**
-启动前需填入应用密钥
+3、修复历史记录为空时报错问题。
 
-| 代码模块                  | 描述                       | 链接                                                         |
-| ------------------------- | -------------------------- | ------------------------------------------------------------ |
-| ./ai_module/ali_nls.py    | 阿里云 实时语音识别        | https://ai.aliyun.com/nls/trans                              |
-| ./ai_module/ms_tts_sdk.py | 微软 文本转情绪语音（可选）   | https://azure.microsoft.com/zh-cn/services/cognitive-services/text-to-speech/ |
-| ./ai_module/xf_ltp.py     | 讯飞 情感分析              | https://www.xfyun.cn/service/emotion-analysis                |
-| ./utils/ngrok_util.py     | ngrok.cc 外网穿透（可选）  | http://ngrok.cc                                              |
-| ./ai_module/yuan_1_0.py    | 浪潮源大模型（NLP 3选1）  | https://air.inspur.com/                                              |
-| ./ai_module/chatgpt.py     | ChatGPT（NLP 3选1）  | *******                                              |
-| ./ai_module/xf_aiui.py    | 讯飞自然语言处理（NLP 3选1）   | https://aiui.xfyun.cn/solution/webapi                        |
+🌟metahuman-stream对接Fay：
 
+1、修复连接不稳定问题。
 
+FFay数字人2024.07.03更新：
 
-## **五、使用说明**
+🌟Fay-agent版：
 
+1、新增阿里云tts对接；
 
-### **使用说明**
+2、解决tts前面几个字不读的问题；
 
-+ 抖音虚拟主播：启动bin/Release_2.85/2.85.exe + fay控制器（抖音输入源开启、展板播放关闭）+ 数字人 + 抖音伴侣（测试时直接通过浏览器打开别人的直播间）；
-+ 现场推销货：fay控制器（展板播放关闭、填写商品信息）+ 数字人；
-+ 商品导购：fay控制器（麦克风输入源开启、展板播放关闭、填写商品信息、填写商品Q&A）+ 数字人；
-+ 语音助理：fay控制器（麦克风输入源开启、展板播放开启）；
-+ 远程语音助理：fay控制器（展板播放关闭）+ 远程设备接入；
-+ 数字人互动：fay控制器（麦克风输入源开启、展板播放关闭、填写性格Q&A）+ 数字人；
-+ 数字人面试官及心理测评：联系免费领取；
-+ 贾维斯、Her：加入我们一起完成。
+3、优化agent调用工具时递归的问题；
 
+4、优化历史记录读取、存储问题；
 
-### **语音指令**
+5、增加自定义读取历史记录条数；
 
-- **关闭核心**
-  关闭
-  再见
-  你走吧
-- **静音**
-  静音
-  闭嘴
-  我想静静
-- **取消静音**
-  取消静音
-  你在哪呢？
-  你可以说话了
-- **播放歌曲**（网易音乐库不可用，寻找替代中）
-  播放歌曲
-  播放音乐
-  唱首歌
-  放首歌
-  听音乐
-  你会唱歌吗？
-- **暂停播放**
-  暂停播放
-  别唱了
-  我不想听了
+6、优化prompt逻辑；
 
+7、优化获取结果时，误报错误问题。
 
-### **图形界面**
+🌟Fay-带货版&助理版：
 
-![](images/controller.png)
+1、优化授权表存储逻辑； 
 
+2、新增阿里云tts对接； 
 
-### **人设**
-数字人属性，与用户交互中能做出相应的响应。
-#### 交互灵敏度
-在交互中，数字人能感受用户的情感，并作出反应。最直的体现，就是语气的变化，如 开心/伤心/生气 等。
-设置灵敏度，可改变用户情感对于数字人的影响程度。
+3、解决tts前面几个字不读的问题
 
-### **接收来源**
+4、优化百度情感分析、灵聚授权问题。
 
-#### 抖音
+FFay数字人2024.06.26更新：
 
-填入直播间地址，实现与直播间粉丝交互
+🌟Fay-agent版：
 
-#### 麦克风
+1、新增支持azure tts；
 
-选择麦克风设备，实现面对面交互，成为你的伙伴
+2、tts配置分离；
 
-#### socket远程音频输入
+3、去除农业相关工具；
 
-可以接入远程音频输入，远程音频输出
+4、agent逻辑调整；
 
+5、新增可接入moonshot；
 
-#### 商品栏
+6、分离知识库工具，使用需自行在工具内配置。
 
-填入商品介绍，数字人将自动讲解商品。
+FFay数字人2024.06.19更新：
 
-当用户对商品有疑问时，数字人可自动跳转至对应商品并解答问题。
+🌟Fay-助理版：
 
-配合抖音接收来源，实现直播间自动带货。
+1. 修复langchain安装时默认包版本问题；
+   
+2、提供moonshot对接参考。
 
+🌟Fay-带货版：
 
+1. 优化入场欢迎文案；
 
-### 相关文章：
+2. 优化闲时文案；
 
-1、[(34条消息) 非常全面的数字人解决方案_郭泽斌之心的博客-CSDN博客_数字人算法](https://blog.csdn.net/aa84758481/article/details/124758727)
+3. 新增弹幕规范检查；
 
-2、[(34条消息) Fay数字人开源项目在mac 上的安装办法_郭泽斌之心的博客-CSDN博客](https://blog.csdn.net/aa84758481/article/details/127551258)
+4. 新增弹幕违规检查；
 
-3、【开源项目：数字人FAY——Fay新架构使用讲解】 https://www.bilibili.com/video/BV1NM411B7Ab/?share_source=copy_web&vd_source=64cd9062f5046acba398177b62bea9ad
+5. 新增本地违禁词配置；
 
-4、【开源项目FAY——UE工程讲解】https://www.bilibili.com/video/BV1C8411P7Ac?vd_source=64cd9062f5046acba398177b62bea9ad
+6. 新增违禁处理方式配置；
 
-5、m1机器安装办法（Gason提供）：https://www.zhihu.com/question/437075754
+7. 新增弹幕格式过滤；
 
+8. 优化请求角色定义
 
+🌟b站弹幕监听：
 
+1. 修复web接口初始化buvid失败的问题；
 
-二次开发指导联系QQ 467665317
+2. 移除开放平台模型的UID。
 
-关注公众号获取最新微信技术交流群二维码
 
-![](images/gzh.jpg)
+FFay数字人2024.06.12更新：
 
+🌟Fay-agent&助理版&带货版：
 
+优化远程音频连接和数字人连接显示。
 
+🌟Fay-UE5：
 
+1. 修复消息窗口消息重叠显示问题；
+
+2. 开放azure api 区域设置。
+
+FFay数字人2024.06.05更新：
+
+🌟Fay-助理版：
+
+1、增加funasr热词识别。
+
+🌟Fay-agent版：
+
+1、新增面板发送消息工具；
+
+2、增加funasr热词识别。
+
+FFay数字人2024.05.22更新：
+
+🌟Fay-带货版：
+
+1、调整gpt代理默认为空。
+
+🌟Fay-agent版：
+
+1、去除语音输出工具，改为语音输出只受“语音合成”按钮影响。
+
+🌟Fay-助理版：
+
+1、调整gpt代理默认为空；
+
+2、去除funasr_wss方法；
+
+3、rasa 支持llma3并优化接口；
+
+4、rasa支持通过vllm部署大模型；
+
+5、支持通过vllm部署的本地模型启动项目；
+
+6、采用fastchat既可以降低显存，又能提升响应速度，支持主流模型部署；
+
+7、修复类 GPT调用失败问题；
+
+8、新增metahuman-stream对接示例 https://qqk9ntwbcit.feishu.cn/wiki/Ik1kwO9X5iilnGkFwRhcnmtvn3e
+
+🌟Fay-UE5：
+
+1、增加文本输入框（与Fay会同步消息），方便网页端和移动端操作。
+
+FFay数字人2024.05.15更新：
+
+🌟Fay-带货版：
+
+1、新增baidu情绪分析秘钥为空时不使用情绪分析；
+
+2、去除讯飞nlp。
+
+🌟Fay-助理版：
+
+1、新增baidu情绪分析秘钥为空时不使用情绪分析。
+
+🌟Fay-UE5：
+
+1、增加语音按钮，方便网页端和移动端操作;
+
+2、修复ue4男模工程。
+
+✨本期推荐学习：
+
+1、metahuman-stream对接Fay：
+
+https://qqk9ntwbcit.feishu.cn/wiki/Ik1kwO9X5iilnGkFwRhcnmtvn3e
+
+FFay数字人2024.05.08更新：
+
+🌟Fay-agent版：
+
+1、配置项新增gpt模型配置、gpt代理默认空；
+
+本期推荐学习：
+
+1、【在Fay接入ufo执行任务】 https://www.bilibili.com/video/BV1rJ4m1P7Ee/
+
+文档：https://qqk9ntwbcit.feishu.cn/wiki/BX2gw9r8JicKLukGbOZcs9YdnGh
+
+FFay数字人2024.04.22更新：
+
+🌟Fay-带货版：
+
+1、使用百度情感分析替换讯飞；
+
+ 2、优化白屏问题。
+
+🌟Fay-助理版：
+
+1、使用百度情感分析替换讯飞；
+
+2、优化白屏问题。
+
+3、利用vllm对大模型进行加速推理，提升响应时间;
+
+4、修改rasa对接ChatGLM3-6b模型支持，也可以单独接入ChatGLM3-6B，可以让ChatGLM3-6b提供与openai完全一样的接口。
+
+🌟Fay-agent版：
+
+1、优化获取网页内容工具的兼容性问题；
+
+2、新增gpt代理配置；
+
+3、优化白屏问题。
+
+FFay数字人2024.04.15更新：
+
+🌟Fay-agent版：
+
+1. 前端禁止开启后修改；
+   
+2. 提高funasr的稳定性。
+
+🌟Fay-助理版：
+
+1. 精简nlp模块；
+   
+2. azure声音模型列表载入方式修改；
+   
+3.  增加自动重新载入知识库； 
+   
+4.  提高funasr的稳定性； 
+
+5.  前端禁止开启后修改；
+
+6.  增加文字回复也可以声音输出。
+
+🌟Fay-带货版：
+
+1. nlp模块精简；
+ 
+2. azure声音模型列表载入方式修改；
+
+3. 前端禁止开启后修改。
+
+FFay数字人2024.04.08更新：
+
+🌟Fay-agent版：
+
+1. 优化gpt兼容接口（为ue新工程架构准备）。
+
+🌟Fay-助理版：
+
+1. *支持azure最新情感音频；
+   
+2. 优化gpt兼容接口（为ue新工程架构准备）。
+
+🌟Fay-带货版：
+
+1. *支持azure最新情感音频。
+
+✨本期推荐学习：
+
+1、【FFay数字人的ue表情制作-哔哩哔哩】 https://b23.tv/QbOMQQ7
+
+2、【FFay数字人通过RAG方式管理知识库-哔哩哔哩】 https://b23.tv/iTsJPLO
+
+
+
+FFay数字人2024.04.01更新：
+
+🌟Fay-agent版：
+
+增加agent工具：连接本地知识库（pdf）查询、获取网页内容；
+
+🌟Fay-助理版：
+
+1、去除已暂停使用的代码 
+
+2、新增langchain连接本地知识库（pdf）查询
+
+🌟Fay-带货版：
+
+去除已暂停使用的代码 
+
+FFay数字人2024.03.25更新：
+
+🌟Fay-agent版：
+
+1、增加agent工具：python执行器、网页检索器；
+
+🌟bilibili弹幕监听：
+
+1、修复兼容性问题
+
+FFay数字人2024.03.18更新：
+
+🌟Fay-带货版：
+
+1、问答优先级调整 
+
+🌟Fay-助理版：
+
+1、问答优先级调整 
+
+2、新增接入langchain nlp模块
+
+3、新增输出问题前必须开启服务提醒
+
+🌟Fay-agent版：
+
+1、清除情绪计算的内容；
+
+FFay数字人2024.03.11更新：
+
+🌟Fay-agent版：
+
+1、取消重启重置日程功能； 
+
+2、上传主动发送微信消息tool(未引入)。
+
+🌟Fay-ue5：[入口](https://github.com/xszyou/fay-ue5)
+
+1、发布5.3模型。
+
+✨本期推荐阅读：
+
+1、[让agent主动给微信发送消息_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1fx421y7tz/)
+
+2、[老ue工程补充打断功能_哔哩哔哩_bilibili](https://www.bilibili.com/video/BV1RH4y157pX/)
+
+
+
+FFay数字人2024.03.04更新：
+
+🌟Fay-助理版：
+
+1、去除live2d显示，优化白屏问题；
+
+2、集成funASR最新版本
+
+🌟Fay-agent版：
+
+1、优化prompt；
+
+2、去除llm chain逻辑，减少agent与llm chain切换的token浪费；
+
+3、优化“思考中...”log，方便后续数字人设计更友好的交互逻辑。
+
+4、集成funASR最新版本
+
+
+
+FFay数字人2024.02.27更新：
+
+🌟Fay-助理版：
+
+1、新增通义星辰nlp对接。
+
+
+
+FFay数字人2024.02.19更新：
+
+🌟Fay-Android连接器：
+
+1、优化通知弹出逻辑。
+
+🌟Fay-agent版：
+
+1、增强funasr稳定性。
+
+
+
+FFay数字人2024.02.05更新：
+
+🌟Fay-助理版：
+
+1、新增tts合成开关；
+
+2、调整对话内容存储逻辑；
+
+3、增强funasr稳定性;
+
+4、修复更新情绪有误问题;
+
+5、普通唤醒模式取消唤醒词去除。
+
+🌟Fay-agent版：
+
+1、解决聊天记录存储线程同步问题;
+
+2、✨新增tts合成开关；
+
+3、增强funasr稳定性；
+
+4、增加开启服务提醒；
+
+5、fay.db记录上区分agent还是llm回应;
+
+6、✨更换最新model gpt-4-0125-preview ;
+
+7、✨优化聊天prompt;
+
+8、修复agent meney里的权重fn bug;
+
+9、删除时间查询tool;
+
+10、执行任务触发无需在聊天窗口显示及db中保存;
+
+11、修复删除日程bug;
+
+
+
+🌟Fay-带货版：
+
+1、修复版本问题导致的错误；
+
+2、新增微信视频号监听；
+
+3、修复更新情绪有误问题。
+
+✨本期推荐阅读：
+
+1、带货版接入微信视频号：https://qqk9ntwbcit.feishu.cn/wiki/DC4cwhYLoiZt2HkO2CecU3jCnGd
+
+2、FFay数字人NLP的选择：https://qqk9ntwbcit.feishu.cn/wiki/Tz4dw6LMUidnqhkv0cvc4FZCnld
+
+[加油]祝大家工作愉快！&[庆祝]新春快乐！
+
+
+
+联系我们，请关注微信公众号 fFay数字人 
 
